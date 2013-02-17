@@ -10,18 +10,26 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
-            <ul class="nav">
-              <li><a href="/">Nav Item</a></li>
-            </ul>
+          <ul class="nav">
+            <li><a href="/">Nav Item</a></li>
+            <li>
+              <% if session[:name].nil? %>
+                <a href="/login">pliease login</a>
+              <% else %>
+                <p>hello <%= session[:name] %>
+                <a href="/logout" >logout</a> </p>
+              <% end %>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
 
-  <div class="container">
-    <%if @error %>
-      <div class="alert alert-error"><%=@error%></div>
-    <% end %>
+    <div class="container">
+      <%if @error %>
+        <div class="alert alert-error"><%=@error%></div>
+      <% end %>
       <%= yield %>
-  </div>
+    </div>
   </body>
 </html>
