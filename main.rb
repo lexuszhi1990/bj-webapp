@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'sinatra'
 require "pry"
+require "./blackjack.rb"
 
 set :sessions, true
 
@@ -21,11 +22,21 @@ post '/user_create' do
   params[:name]
   if !params[:name].empty?
     session[:name] = params[:name]
-    redirect '/'
+    redirect '/game'
   else
     @error = "Must input a name"
     erb :login
   end
 end
 
+
+get '/game' do
+  @deck = Deck.new
+  @dealer = Dealer.new
+  @player = Player.new(session[:name])
+  
+  @game = Blackjack.new
+
+  erb :game
+end
 
