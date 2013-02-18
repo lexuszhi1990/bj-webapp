@@ -14,10 +14,9 @@
             <li><a href="/">Nav Item</a></li>
             <li>
               <% if session[:name].nil? %>
-                <a href="/login">pliease login</a>
+                <a href="/login">please login</a>
               <% else %>
-                <p>hello <%= session[:name] %>
-                <a href="/logout" >logout</a> </p>
+                <a href="/logout" >logout</a>
               <% end %>
             </li>
           </ul>

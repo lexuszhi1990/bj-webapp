@@ -19,7 +19,6 @@ get '/logout' do
 end
 
 post '/user_create' do
-  params[:name]
   if !params[:name].empty?
     session[:name] = params[:name]
     redirect '/game'
@@ -29,14 +28,36 @@ post '/user_create' do
   end
 end
 
+def startup
+  puts "game start up"
+  session[:deck] = Deck.new
+  session[:player] = Player.new(session[:name])
+  session[:player].add_card(session[:deck].deal_one)
+  session[:player].add_card(session[:deck].deal_one)
+end
 
 get '/game' do
-  @deck = Deck.new
-  @dealer = Dealer.new
-  @player = Player.new(session[:name])
-  
-  @game = Blackjack.new
+  if session[:name].nil?
+    @error = "Please lonin before you start the game"
+    erb :login
+  else
+    startup
+    erb :game
+  end
+end
 
+post '/game/player/hit' do
+  session[:player].add_card(session[:deck].deal_one)
   erb :game
 end
 
+post '/game/player/stay' do
+  erb :game
+end
+
+helpers do
+  def test
+    
+  end
+
+end
