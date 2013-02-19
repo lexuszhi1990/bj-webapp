@@ -28,6 +28,12 @@
       <%if @error %>
         <div class="alert alert-error"><%=@error%></div>
       <% end %>
+      <%if @flash %>
+        <div class="alert alert-error"><%=@flash%></div>
+      <% end %>
+      <%if @another %>
+        <a href="/game/restart" class="btn btn-large ">Once again</a>
+      <% end %>
       <%= yield %>
     </div>
   </body>

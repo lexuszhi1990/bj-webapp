@@ -1,3 +1,5 @@
+require "rubygems"
+require "pry"
 class Card
   attr_reader :suit, :face_value
   def initialize(s, fv)
@@ -85,15 +87,18 @@ module Hand
     end
     
     total
-
   end
-  
+
   def add_card(new_card)
     cards << new_card
   end
 
   def is_busted?
-    total > Blackjack::BLACKJACK_AMOUNT
+    total > 21
+  end
+
+  def hit_blackjack?
+    total == 21
   end
 
   def clear_cards
@@ -133,129 +138,4 @@ class Dealer
   
 end
 
-class Blackjack
-  attr_reader :player, :dealer, :deck
-
-  BLACKJACK_AMOUNT = 21
-  DEALER_HIT_MIN = 17
-
-
-  def initialize
-    @deck = Deck.new
-    @player = Player.new
-    @dealer = Dealer.new
-  end
-
-  def getchoice
-      s = gets.chomp
-      while(s != "1" && s != "2")
-          puts "please input the right choice, 1 or 2"
-          s = gets.chomp
-      end
-      s
-  end
-
-  def blackjack_or_bust?(player_or_dealer)
-    if player_or_dealer.total == BLACKJACK_AMOUNT
-      if player_or_dealer.is_a?(Dealer)
-        puts "Sorry, dealer hit blackjack. #{player.name} loses."
-      else
-        puts "Congratulations, you hit blackjack! #{player.name} win!"
-      end
-      play_again?
-    elsif player_or_dealer.is_busted?
-      if player_or_dealer.is_a?(Dealer)
-        puts "Congratulations, dealer busted. #{player.name} win!"
-      else
-        puts "Sorry, #{player.name} busted. #{player.name} loses."
-      end
-      play_again?
-    end
-  end
-
-  def deal_cards
-    @player.add_card(@deck.deal_one)
-    @dealer.add_card(@deck.deal_one)
-    @player.add_card(@deck.deal_one)
-    @dealer.add_card(@deck.deal_one)
-  end
-
-  def show_flop
-    @player.show_hand
-    @dealer.show_hand
-  end
-
-  def player_turn
-    puts "Now, it's player's turn..."
-
-    while !@player.is_busted?
-      puts "make a choice : 1> hit, 2> stay"
-      res = getchoice
-      if res == '2'
-       puts "#{player.name} chose to stay."
-        break
-      end
-
-      new_card = @deck.deal_one
-      puts "Dealing card to #{@player.name}: #{new_card}"
-      @player.add_card(new_card)
-      puts "#{@player.name}'s total is now: #{player.total}"
-      blackjack_or_bust?(@player)
-    end
-    puts "#{@player.name} stay at #{player.total}"
-  end
-
-  def dealer_turn
-    puts "Now, it's dealer's turn..."
-
-    while @dealer.total < DEALER_HIT_MIN
-      new_card = @deck.deal_one
-      puts "Dealing card to #{@dealer.name}: #{new_card}"
-      @dealer.add_card(new_card)
-      puts "#{@dealer.name}'s total is now: #{@dealer.total}"
-      blackjack_or_bust?(@dealer)
-    end
-    puts "#{@dealer.name} stay at #{dealer.total}"
-  end
-
-  def who_won?
-    if player.total > dealer.total
-      puts "Congratulations, #{player.name} wins!"
-    elsif player.total < dealer.total
-      puts "Sorry, #{player.name} loses."
-    else
-      puts "It's a tie!"
-    end
-    play_again?
-  end
-
-  def play_again?
-    puts ""
-    puts "Would you like to play again? 1) yes 2) no, exit"
-    res = getchoice
-    if res == '1'
-      puts "Starting new game..."
-      puts ""
-      deck = Deck.new
-      player.clear_cards
-      dealer.clear_cards
-      start
-    else
-      puts "Goodbye!"
-      exit
-    end 
-  end
-
-  def start
-    deal_cards
-    show_flop
-    player_turn
-    dealer_turn
-    who_won?
-  end
-end
-
-
-class Game < Blackjack
-
-end
+#binding.pry

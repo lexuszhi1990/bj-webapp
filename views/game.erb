@@ -2,7 +2,11 @@
 <h4>player <big><%= session[:player].name %></big> comes in</h4>
 show player's hands </br>
 Player's hand is <%= session[:player].cards %></br>
-Player'total :<%= session[:player].total %>
+Player'total :<%= session[:player].total %></br>
+
+show dealer's hands </br>
+Player's hand is <%= session[:dealer].cards %></br>
+Player'total :<%= session[:dealer].total %>
 <div style="margin-top: 5px" display="block">
 <form action="/game/player/hit" method="POST" style="float: left; margin-right: 10px;">
   Bet <small>($5-100)</small>: <input type="text" name="bet_amount" style="width: 25px"/>
@@ -12,8 +16,6 @@ Player'total :<%= session[:player].total %>
   <input type="submit" value="Stay" class= "btn btn-warning btn-large" />
 </form>
 </div>
-
-
 
 </br> </br> </br> </br> </br> </br>
 <ul>
