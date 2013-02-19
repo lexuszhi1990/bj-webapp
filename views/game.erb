@@ -7,6 +7,14 @@
       </li>
     <% end %>
 
+    <% if @stat.eql?("vacation") %>
+      <li class="thumbnail span2">
+      <form action="/game/dealer/hit" method="POST" style="float: right">
+        <input type="submit" value="Dealor card" class= "btn btn-success btn-large" />
+      </form>
+      </li>
+    <% end %>
+
   </ul>
 </div>
 <p>Your Cards</p>
@@ -32,11 +40,14 @@
       </form>
       <% elsif @stat.eql?("bust") %>
         <p>What a pity! You busted</p>
-        <a href="/game/restart" class="btn btn-large ">Another Game</a>
 
       <% elsif @stat.eql?("lose") %>
+        <p>What a pity! You lost</p>
         
       <% elsif @stat.eql?("win") %>
+        <p>What a pity! You Win!</p>
+
+      <% else %>
 
       <% end %>
     </div>
