@@ -1,26 +1,46 @@
-<h3>Hello,<%= session[:name] %>!  Start game here</h3>
-<h4>player <big><%= session[:player].name %></big> comes in</h4>
-show player's hands </br>
-Player's hand is <%= session[:player].cards %></br>
-Player'total :<%= session[:player].total %></br>
+<p>Daaler's Cards</p>
+<div class="row">
+  <ul class="thumbnails">
+    <% session[:dealer].cards.each do |card| %>
+      <li class="thumbnail span2">
+      <img class="img-rounded" src=<%= card.load_path %> alt="dsdas" />
+      </li>
+    <% end %>
 
-show dealer's hands </br>
-Player's hand is <%= session[:dealer].cards %></br>
-Player'total :<%= session[:dealer].total %>
-<div style="margin-top: 5px" display="block">
-<form action="/game/player/hit" method="POST" style="float: left; margin-right: 10px;">
-  Bet <small>($5-100)</small>: <input type="text" name="bet_amount" style="width: 25px"/>
-  <input type="submit" value="Hit" class= "btn btn-success btn-large" />
-</form>
-<form action="/game/player/stay" method="POST" style="float: left">
-  <input type="submit" value="Stay" class= "btn btn-warning btn-large" />
-</form>
+  </ul>
 </div>
+<p>Your Cards</p>
+<div class="row">
+  <ul class="thumbnails">
+    <% session[:player].cards.each do |card| %>
+      <li class="thumbnail span2">
+      <img class="img-rounded" src=<%= card.load_path %> alt="dsdas" />
+      </li>
+    <% end %>
 
-</br> </br> </br> </br> </br> </br>
-<ul>
-  <% session[:deck].cards.each do |card| %>
-    <li> <%= card.to_s %></li>
-  <% end %>
-</ul>
+    <div class="well span3">
+      <h4>Your points is <strong> <%= session[:player].total %> </strong> </h4>
 
+      <% if @stat.nil? %>
+    <form action="/game/player/hit" method="POST" style="float: right; margin-right: 10px;">
+      Bet <small>($5-100)</small>: <input type="text" name="bet_amount" style="width: 25px"/>
+
+      <input type="submit" value="Hit" class= "btn btn-success btn-large" />
+    </form>
+      <form action="/game/player/stay" method="POST" style="float: right">
+        <input type="submit" value="Stay" class= "btn btn-warning btn-large" />
+      </form>
+      <% elsif @stat.eql?("bust") %>
+        <p>What a pity! You busted</p>
+        <a href="/game/restart" class="btn btn-large ">Another Game</a>
+
+      <% elsif @stat.eql?("lose") %>
+        
+      <% elsif @stat.eql?("win") %>
+
+      <% end %>
+    </div>
+
+
+    </ul>
+  </div>

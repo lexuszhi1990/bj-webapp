@@ -9,12 +9,23 @@ class Card
   
   def find_suit
     ret = case @suit
-          when 'H' then "Hearts"
-          when 'D' then "Diamonds"
-          when 'S' then "Spades"
-          when 'C' then "Clubs"
+          when 'H' then "hearts"
+          when 'D' then "diamonds"
+          when 'S' then "spades"
+          when 'C' then "clubs"
           end 
     ret
+  end
+
+  def load_path
+    val = case @face_value
+          when 'J' then "jack"
+          when 'Q' then "queen"
+          when 'K' then "king"
+          when 'A' then "ace"
+          else @face_value.to_s
+          end
+      "/images/cards/" + find_suit + "_" + val + ".jpg"
   end
 
   def pretty_output
@@ -62,14 +73,6 @@ end
 
 module Hand
 
-  def show_hand
-    puts "---- #{@name}'s Hand ----"
-    @cards.each do |card|
-      puts "=> #{card}"
-    end
-    puts "=> Total: #{total}"
-  end
-  
   def total
     face_values = cards.map { |card|  card.face_value if !card.nil?}
     total = 0
@@ -126,14 +129,6 @@ class Dealer
   def initialize(name="Dealer")
       @name = name
       @cards = []
-  end
-
-  def show_hand
-    puts "---- #{@name}'s Hand ----"
-    puts "The first card is hidden"
-    @cards[1..-1].each do |card|
-      puts "=> #{card}"
-    end
   end
   
 end

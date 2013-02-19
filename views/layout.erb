@@ -3,7 +3,10 @@
   <head>
     <title>My First App</title>
     <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/application.css">
+    <link rel="text/javascript" href="/vendor/bootstrap/js/bootstrap.js">
+    <link rel="text/javascript" href="/jquery-1.9.1.min.js">
+    <link rel="text/css"  href="/application.css">
+    <link rel="text/javascript" href="/application.js">
   </head>
   <body style="padding-top: 50px;">
 
@@ -11,7 +14,7 @@
       <div class="navbar-inner">
         <div class="container">
           <ul class="nav">
-            <li><a href="/">Nav Item</a></li>
+            <li><a href="/">BlackJack</a></li>
             <li>
               <% if session[:name].nil? %>
                 <a href="/login">please login</a>
@@ -29,10 +32,7 @@
         <div class="alert alert-error"><%=@error%></div>
       <% end %>
       <%if @flash %>
-        <div class="alert alert-error"><%=@flash%></div>
-      <% end %>
-      <%if @another %>
-        <a href="/game/restart" class="btn btn-large ">Once again</a>
+        <div class="alert alert-info "><%=@flash%></div>
       <% end %>
       <%= yield %>
     </div>

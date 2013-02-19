@@ -35,12 +35,10 @@ def startup
   session[:player] = Player.new(session[:name])
   session[:player].add_card(session[:deck].deal_one)
   session[:player].add_card(session[:deck].deal_one)
-  burst_or_blackjack?(session[:player])
 
   session[:dealer] = Dealer.new
   session[:dealer].add_card(session[:deck].deal_one)
   session[:dealer].add_card(session[:deck].deal_one)
-  burst_or_blackjack?(session[:dealer])
 end
 
 get '/game' do
@@ -50,6 +48,9 @@ get '/game' do
   else
     startup
 
+   if session[:dealer].hit_blackjack?
+
+    end
     redirect '/game/player'
   end
 end
@@ -118,7 +119,10 @@ end
 
 post '/game/player/hit' do
   session[:player].add_card(session[:deck].deal_one)
-  burst_or_blackjack?(session[:player])
+  if session[:player].is_busted?
+    @another = "You bursted..."
+    @stat = "bust"
+  end
   erb :game
 end
 
@@ -129,5 +133,11 @@ end
 helpers do
   def test
     
+  end
+ 
+  def picture_path(card)
+    
+      #"/images/cards/hearts_2.jpg"
+      #"/images/cards/" + card.suit.downcase + 
   end
 end
