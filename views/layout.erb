@@ -15,13 +15,11 @@
         <div class="container">
           <ul class="nav">
             <li><a href="/">BlackJack</a></li>
-            <li>
-              <% if session[:name].nil? %>
-                <a href="/login">please login</a>
-              <% else %>
-                <a href="/logout" >logout</a>
-              <% end %>
-            </li>
+            <% if session[:name].nil? %>
+              <li> <a href="/login">please login</a> </li>
+            <% else %>
+              <li> <a href="/logout" >logout</a> </li>
+            <% end %>
           </ul>
         </div>
       </div>

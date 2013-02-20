@@ -31,13 +31,14 @@
     <% end %>
     <li class="span2">
       <h4> Points : <strong> <%= session[:player].total %> </strong> </h4>
+      <h6>Golds: $<%= session[:gold] %>.Bet: $<%= session[:bet] %></h6>
 
     <% if @stat.eql?("play") %>
       <form action="/game/player/hit" method="POST" style="float: right; margin-right: 10px;">Bet <small>($5-100)</small>: <input type="text" name="bet_amount" style="width: 25px"/>
-        <input type="submit" value="Hit" class= "btn btn-success btn-large" />
+        <input type="submit" value="Hit" class= "btn btn-success " />
       </form>
       <form action="/game/player/stay" method="POST" style="float: left">
-        <input type="submit" value="Stay" class= "btn btn-warning btn-large" />
+        <input type="submit" value="Stay" class= "btn btn-warning" />
       </form>
     <% elsif @stat.eql?("vacation") %>
       <p class="alert">Now, it is the Dealer's Turn, Please click the button above to deal card to the Dealer<p>
