@@ -42,6 +42,33 @@ get '/game' do
     erb :login
   else
     startup
+    redirect '/game/player'
+  end
+end
+
+get '/game/compare' do 
+  p = session[:player].total 
+  d = session[:dealer].total 
+  if p > d
+    @flash = "#{session[:name]},your points :#{p} vs #{d} Dealer's points. congratulations, you win!"
+  elsif p < d
+    @flash = "#{session[:name]},your points :#{p} vs #{d} Dealer's points.What a pity. you lost."
+  else
+    @flash = "#{session[:name]},your points :#{p} vs #{d} Dealer's points. not so bad. It's a tie."
+  end
+    
+  @stat = "end"
+  erb :game
+end
+
+get '/game/restart' do
+  session[:deck] = Deck.new
+  session[:player].clear_cards
+  session[:dealer].clear_cards
+  redirect '/game/player'
+end
+
+get '/game/player' do
 
     session[:player].add_card(session[:deck].deal_one)
     session[:dealer].add_card(session[:deck].deal_one)
@@ -49,68 +76,21 @@ get '/game' do
     session[:dealer].add_card(session[:deck].deal_one)
 
     if session[:dealer].hit_blackjack?
-      @stat = "lose"
-      @flash = "dealer hit the Blackjack"
+      @flash = "#{session[:name]},you lost. Dealer hit the blackjack"
+      @stat = "end"
       erb :game
     elsif session[:player].hit_blackjack?
-      @stat = "win"
-      @flash = "you hit the Blackjack"
+      @flash = "#{session[:name]},you hit the blackjack. congratulations, you win!"
+      @stat = "end"
       erb :game
     else
-      redirect '/game/player'
+      @stat = "play"
+      erb :game
     end
-  end
-end
-
-get '/game/compare' do 
-  if session[:player].total > session[:dealer].total
-    @flash = "#{session[:name]}, congratulations, you win!"
-    @stat = "win"
-  elsif session[:player].total < session[:dealer].total
-    @flash = "#{session[:name]}, sorry, your lost"
-    @stat = "lose"
-  else
-    @flash = "It a tie"
-    @stat = "tie"
-  end
-
-  erb :game
-end
-
-get '/game/result' do
-    if person.name.eql?(session[:name])
-      puts person.name
-      if person.total == 21
-        @flash = "#{session[:name]}, congratulations, you win!"
-        @another = true
-      elsif person.total > 21
-        @flash = "#{session[:name]}, sorry, your burst!"
-        @another = true
-      end
-    else
-      if person.total == 21
-        @flash = "#{session[:name]},you lost, dealer hit the blackjack"
-        @another = true
-      elsif person.total > 21
-        @flash = "#{session[:name]},you win, lealer busted"
-        @another = true
-      end
-
-    end
-
-  end
-
-get '/game/restart' do
-  session[:player].clear_cards
-  redirect '/game'
-end
-
-get '/game/player' do
-  erb :game
 end
 
 get '/game/dealer' do
-  @flash = "now, it's dealer'turn, click the git button to dealer cards"
+  @flash = "now, it's dealer'turn, click the button to dealer cards"
   @stat = "vacation"
   
   if session[:dealer].total > 17
@@ -121,19 +101,20 @@ get '/game/dealer' do
 end
 
 post '/game/dealer/hit' do
-  @flash = "once again"
-  @stat = "vacation"
+  session[:dealer].add_card(session[:deck].deal_one)
   total = session[:dealer].total
+  if total == 21
+    @flash = "#{session[:name]},you lost. Dealer hit the blackjack"
+    @stat = "end"
+  elsif total > 21
+    @flash = "#{session[:name]},you win! Dealer busted"
+    @stat = "end"
+  elsif total < 17
+    @flash = "go ahead"
+    @stat = "vacation"
+  end
   if total > 17 && total < 21
     redirect "/game/compare"
-  elsif total == 21
-    @flash = "dealer hit the Blackjack"
-    @stat = "lose"
-  elsif total > 21
-    @flash = "dealer busted"
-    @stat = "win"
-  elsif total < 17
-      session[:dealer].add_card(session[:deck].deal_one)
   end
 
   erb :game
@@ -143,8 +124,13 @@ end
 post '/game/player/hit' do
   session[:player].add_card(session[:deck].deal_one)
   if session[:player].is_busted?
-    @flash = "Oh, Sorry! You bursted..."
-    @stat = "bust"
+    @flash = "Oh, Sorry! Your points is #{session[:player].total}.and you bursted..."
+    @stat = "end"
+  elsif session[:player].hit_blackjack?
+    @flash = "#{session[:name]},you hit the blackjack. congratulations, you win!"
+    @stat = "end"
+  else
+    @stat = "play"
   end
   erb :game
 end
