@@ -1,16 +1,20 @@
 <p>Daaler's Cards</p>
 <div class="row-fluid">
   <ul class="thumbnails">
-    <% session[:dealer].cards.each do |card| %>
+    <% session[:dealer].cards.each_with_index do |card, id| %>
       <li class="thumbnail span2">
-      <img class="img-rounded" src=<%= card.load_path %> alt="dsdas" />
+        <% if id.eql?(0) && @stat != "end" %>
+          <img class="img-rounded" src="/images/cards/cover.jpg" alt="dsdas" />
+        <% else %>
+          <img class="img-rounded" src=<%= card.load_path %> alt="dsdas" />
+        <% end %>
       </li>
     <% end %>
 
     <% if @stat.eql?("vacation") %>
       <li class="thumbnail span2">
       <form action="/game/dealer/hit" method="POST" style="float: right">
-        <input type="submit" value="Dealor card" class= "btn btn-success btn-large" />
+        <input type="submit" value="Deal Card" class= "btn btn-success btn-large" />
       </form>
       </li>
     <% end %>
@@ -25,31 +29,21 @@
       <img class="img-rounded" src=<%= card.load_path %> alt=<%= card.to_s %> />
       </li>
     <% end %>
-    <li class="span3">
-      <h4>Your points is <strong> <%= session[:player].total %> </strong> </h4>
+    <li class="span2">
+      <h4> Points : <strong> <%= session[:player].total %> </strong> </h4>
 
     <% if @stat.eql?("play") %>
       <form action="/game/player/hit" method="POST" style="float: right; margin-right: 10px;">Bet <small>($5-100)</small>: <input type="text" name="bet_amount" style="width: 25px"/>
-
         <input type="submit" value="Hit" class= "btn btn-success btn-large" />
       </form>
-      <form action="/game/player/stay" method="POST" style="float: right">
+      <form action="/game/player/stay" method="POST" style="float: left">
         <input type="submit" value="Stay" class= "btn btn-warning btn-large" />
       </form>
-    <% elsif @stat.eql?("bust") %>
-      <p>What a pity! You busted</p>
-
-    <% elsif @stat.eql?("lose") %>
-      <p>What a pity! You lost</p>
-
-    <% elsif @stat.eql?("win") %>
-      <p>What a pity! You Win!</p>
-
     <% elsif @stat.eql?("vacation") %>
-      <p>Now, it is the Dealer's Turn, Please click the button above to deal card to the Dealer<p>
+      <p class="alert">Now, it is the Dealer's Turn, Please click the button above to deal card to the Dealer<p>
 
     <% elsif @stat.eql?("end") %>
-      <p>Now, this round is end.Click the Button to start another </p>
+      <p>Now, this round is end.Click the Button to start another game</p>
       <form action="/game/restart" method="GET" style="float: middle">
         <input type="submit" value="Another GAME" class= "btn btn-warning btn-large" />
       </form>

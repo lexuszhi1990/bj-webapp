@@ -76,11 +76,11 @@ get '/game/player' do
     session[:dealer].add_card(session[:deck].deal_one)
 
     if session[:dealer].hit_blackjack?
-      @flash = "#{session[:name]},you lost. Dealer hit the blackjack"
+      @flash = "#{session[:name]},You lost. Dealer hit the blackjack"
       @stat = "end"
       erb :game
     elsif session[:player].hit_blackjack?
-      @flash = "#{session[:name]},you hit the blackjack. congratulations, you win!"
+      @flash = "#{session[:name]},You hit the blackjack. Congratulations! You win!"
       @stat = "end"
       erb :game
     else
@@ -90,7 +90,7 @@ get '/game/player' do
 end
 
 get '/game/dealer' do
-  @flash = "now, it's dealer'turn, click the button to dealer cards"
+  @flash = "now, it's dealer'turn. Click the button to dealer cards"
   @stat = "vacation"
   
   if session[:dealer].total > 17
@@ -104,16 +104,16 @@ post '/game/dealer/hit' do
   session[:dealer].add_card(session[:deck].deal_one)
   total = session[:dealer].total
   if total == 21
-    @flash = "#{session[:name]},you lost. Dealer hit the blackjack"
+    @flash = "#{session[:name]}.You lost. Dealer hit the blackjack"
     @stat = "end"
   elsif total > 21
-    @flash = "#{session[:name]},you win! Dealer busted"
+    @flash = "#{session[:name]}. Dealer busted. Congratulation! You Win!"
     @stat = "end"
   elsif total < 17
     @flash = "go ahead"
     @stat = "vacation"
   end
-  if total > 17 && total < 21
+  if total >= 17 && total < 21
     redirect "/game/compare"
   end
 
