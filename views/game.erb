@@ -45,7 +45,7 @@
 
     <% elsif @stat.eql?("end") %>
       <p>Now, this round is end.Click the Button to start another game</p>
-      <form action="/game/restart" method="GET" style="float: middle">
+      <form action="/game" method="GET" style="float: middle">
         <input type="submit" value="Another GAME" class= "btn btn-warning btn-large" />
       </form>
     <% else %>
