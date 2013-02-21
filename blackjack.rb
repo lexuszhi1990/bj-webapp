@@ -1,5 +1,3 @@
-require "rubygems"
-require "pry"
 class Card
   attr_reader :suit, :face_value
   def initialize(s, fv)
