@@ -48,6 +48,12 @@ get '/game' do
   session[:bet] = 0
   session[:player].clear_cards
   session[:dealer].clear_cards
+
+  2.times do
+    session[:player].add_card(session[:deck].deal_one)
+    session[:dealer].add_card(session[:deck].deal_one)
+  end
+
   redirect '/game/bet'
 end
 
@@ -68,10 +74,6 @@ post '/game/bet' do
 end
 
 get '/game/player' do
-  2.times do
-    session[:player].add_card(session[:deck].deal_one)
-    session[:dealer].add_card(session[:deck].deal_one)
-  end
 
   if session[:dealer].hit_blackjack? || session[:player].hit_blackjack?
     redirect "/game/compare"

@@ -34,8 +34,9 @@
       <h6>Golds: $<%= session[:gold] %>.Bet: $<%= session[:bet] %></h6>
 
     <% if @stat.eql?("play") %>
+      <p>To be, or not to be.That is the question</p>
       <form action="/game/player/hit" method="POST" style="float: right; margin-right: 10px;">
-        <input type="submit" value="Hit" class= "btn btn-success " />
+        <input type="submit" value="Hit" class= "btn btn-danger" />
       </form>
       <form action="/game/player/stay" method="POST" style="float: left">
         <input type="submit" value="Stay" class= "btn btn-warning" />
@@ -45,7 +46,7 @@
     <% elsif @stat.eql?("end") %>
       <p>Now, this round is end.Click the Button to start another game</p>
       <form action="/game" method="GET" style="float: middle">
-        <input type="submit" value="Another GAME" class= "btn btn-warning btn-large" />
+        <input type="submit" value="Another GAME" class= "btn btn-primary btn-large" />
       </form>
     <% else %>
 
