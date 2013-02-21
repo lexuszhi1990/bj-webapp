@@ -45,6 +45,7 @@ end
 
 get '/game' do
   session[:deck] = Deck.new
+  session[:bet] = 0
   session[:player].clear_cards
   session[:dealer].clear_cards
   redirect '/game/bet'
@@ -110,36 +111,39 @@ post '/game/dealer/hit' do
   if total < 17
     @flash = "go ahead"
     @stat = "vacation"
+    erb :game
   else
     redirect "/game/compare"
   end
-
-  erb :game
-
 end
 
 get '/game/compare' do 
   p = session[:player].total 
   d = session[:dealer].total 
   if p == 21
-    @flash = "#{session[:name]},You lost. Dealer hit the blackjack"
+    @flash = "#{session[:name]},You hit the blackjack. Congratulations! You win!"
+    session[:gold] += session[:bet] * 2
   elsif p > 21
     @flash = "Oh, Sorry! Your points is #{session[:player].total}.and you bursted..."
   elsif d == 21
-    @flash = "#{session[:name]},You hit the blackjack. Congratulations! You win!"
+    @flash = "#{session[:name]},You lost. Dealer hit the blackjack"
   elsif d > 21
     @flash = "#{session[:name]}. Dealer busted. Congratulation! You Win!"
+    session[:gold] += session[:bet] * 2
   else
     case p <=> d
     when 1 then 
-      @flash = "#{session[:name]},your points :#{p} vs #{d} Dealer's points. congratulations, you win!"
+      @flash = "#{session[:name]},your points :#{p} vs #{d} Dealer's points. Congratulations! You win!"
+      session[:gold] += session[:bet] * 2
     when -1 then
       @flash = "#{session[:name]},your points :#{p} vs #{d} Dealer's points.What a pity. you lost."
     when 0 then
       @flash = "#{session[:name]},your points :#{p} vs #{d} Dealer's points. Not so bad. It's a tie."
+      session[:gold] += session[:bet]
     end
   end
 
+  @flash += "</br>Now, Your money is $#{session[:gold]}"
   @stat = "end"
   erb :game
 end
@@ -156,7 +160,7 @@ helpers do
   end
 
   def wrong_bet_amount?
-    if params[:bet_amount].empty? || params[:bet_amount].to_i < 5 || params[:bet_amount].to_i > 100
+    if params[:bet_amount].empty? || params[:bet_amount].to_i < 10 || params[:bet_amount].to_i > 100
       true
     else
       false
