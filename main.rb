@@ -53,15 +53,25 @@ end
 get '/game/compare' do 
   p = session[:player].total 
   d = session[:dealer].total 
-  case p <=> d
-  when 1 then 
-    @flash = "#{session[:name]},your points :#{p} vs #{d} Dealer's points. congratulations, you win!"
-  when -1 then
-    @flash = "#{session[:name]},your points :#{p} vs #{d} Dealer's points.What a pity. you lost."
-  when 0 then
-    @flash = "#{session[:name]},your points :#{p} vs #{d} Dealer's points. Not so bad. It's a tie."
+  if p == 21
+    @flash = "#{session[:name]},You lost. Dealer hit the blackjack"
+  elsif p > 21
+    @flash = "Oh, Sorry! Your points is #{session[:player].total}.and you bursted..."
+  elsif d == 21
+    @flash = "#{session[:name]},You hit the blackjack. Congratulations! You win!"
+  elsif d > 21
+    @flash = "#{session[:name]}. Dealer busted. Congratulation! You Win!"
+  else
+    case p <=> d
+    when 1 then 
+      @flash = "#{session[:name]},your points :#{p} vs #{d} Dealer's points. congratulations, you win!"
+    when -1 then
+      @flash = "#{session[:name]},your points :#{p} vs #{d} Dealer's points.What a pity. you lost."
+    when 0 then
+      @flash = "#{session[:name]},your points :#{p} vs #{d} Dealer's points. Not so bad. It's a tie."
+    end
   end
-    
+
   @stat = "end"
   erb :game
 end
@@ -75,23 +85,17 @@ end
 
 get '/game/player' do
 
+  2.times do
     session[:player].add_card(session[:deck].deal_one)
     session[:dealer].add_card(session[:deck].deal_one)
-    session[:player].add_card(session[:deck].deal_one)
-    session[:dealer].add_card(session[:deck].deal_one)
+  end
 
-    if session[:dealer].hit_blackjack?
-      @flash = "#{session[:name]},You lost. Dealer hit the blackjack"
-      @stat = "end"
-      erb :game
-    elsif session[:player].hit_blackjack?
-      @flash = "#{session[:name]},You hit the blackjack. Congratulations! You win!"
-      @stat = "end"
-      erb :game
-    else
-      @stat = "play"
-      erb :game
-    end
+  if session[:dealer].hit_blackjack? || session[:player].hit_blackjack?
+    redirect "/game/compare"
+  else
+    @stat = "play"
+    erb :game
+  end
 end
 
 post '/game/player/hit' do
@@ -103,12 +107,8 @@ post '/game/player/hit' do
     session[:player].add_card(session[:deck].deal_one)
     session[:gold] = session[:gold] - params[:bet_amount].to_i
     session[:bet] = params[:bet_amount].to_i
-    if session[:player].is_busted?
-      @flash = "Oh, Sorry! Your points is #{session[:player].total}.and you bursted..."
-      @stat = "end"
-    elsif session[:player].hit_blackjack?
-      @flash = "#{session[:name]},you hit the blackjack. Congratulations, you win!"
-      @stat = "end"
+    if session[:player].is_busted? || session[:player].hit_blackjack?
+      redirect "/game/compare"
     else
       @stat = "play"
     end
@@ -123,7 +123,6 @@ end
 get '/game/dealer' do
   @flash = "now, it's dealer'turn. Click the button to dealer cards"
   @stat = "vacation"
-
   if session[:dealer].total >= 17
     redirect "/game/compare"
   end
@@ -134,17 +133,10 @@ end
 post '/game/dealer/hit' do
   session[:dealer].add_card(session[:deck].deal_one)
   total = session[:dealer].total
-  if total == 21
-    @flash = "#{session[:name]}.You lost. Dealer hit the blackjack"
-    @stat = "end"
-  elsif total > 21
-    @flash = "#{session[:name]}. Dealer busted. Congratulation! You Win!"
-    @stat = "end"
-  elsif total < 17
+  if total < 17
     @flash = "go ahead"
     @stat = "vacation"
-  end
-  if total >= 17
+  else
     redirect "/game/compare"
   end
 
