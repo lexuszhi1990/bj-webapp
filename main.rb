@@ -40,14 +40,20 @@ def startup
   session[:bet] = 0
 end
 
-get '/game' do
+before '/game/*' do
   if session[:name].nil?
-    @error = "Please lonin before you start the game"
-    erb :login
-  else
-    startup
-    redirect '/game/player'
+    @error = "Please login before you start the game"
+    redirect '/login'
   end
+end
+
+get '/game' do
+    startup
+    redirect '/game/bet'
+end
+
+get '/game/bet' do
+
 end
 
 get '/game/compare' do 
